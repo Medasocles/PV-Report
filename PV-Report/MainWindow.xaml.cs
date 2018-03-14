@@ -28,7 +28,7 @@ namespace PV_Report
             InitializeComponent();
 
             _allEmails = new List<SolarWebReportEmail>();
-            MboxFilePath = Path.Combine(@"C:\Users\SBauer\Desktop\PV-Report_takeout-20180312T145529Z-001\Takeout\Mail", "PV Report.mbox");
+            MboxFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Test", "PV Report.mbox");
         }
 
         public static readonly DependencyProperty MboxFilePathProperty = DependencyProperty.Register(
