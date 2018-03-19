@@ -20,12 +20,15 @@ namespace PV_Report
         private List<string> _contentStrings;
         private SolarWebReportEmail _currentMail;
         private List<SolarWebReportEmail> _allEmails;
+        private string _directorySuffix;
 
         public MainWindow()
         {
             DataContext = this;
 
             InitializeComponent();
+
+
 
             _allEmails = new List<SolarWebReportEmail>();
             MboxFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Test", "PV Report.mbox");
@@ -71,10 +74,11 @@ namespace PV_Report
                         fileName = fileName.Replace("%C3%BC", "ü");
                         fileName = fileName.Replace("%C3%9F", "ß");
 
-                        if (!Directory.Exists(storePath))
-                            Directory.CreateDirectory(storePath);
+                        var directory = Path.Combine(storePath, mail.Date.Year.ToString());
+                        if (!Directory.Exists(directory))
+                            Directory.CreateDirectory(directory);
 
-                        var filePath = Path.Combine(storePath, fileName);
+                        var filePath = Path.Combine(directory, fileName);
 
                         using (var responseStream = httpWebResponse.GetResponseStream())
                         {
@@ -129,6 +133,7 @@ namespace PV_Report
             {
                 _fullMboxContent = File.ReadAllLines(MboxFilePath).ToList();
                 _contentStrings = new List<string>();
+                _directorySuffix = Guid.NewGuid().ToString();
 
                 for (var i = 0; i < _fullMboxContent.Count; i++)
                 {
@@ -142,6 +147,7 @@ namespace PV_Report
 
                         var innerCount = i;
                         var innerMessageLines = new List<string>();
+
                         while (true)
                         {
                             if (innerCount == _fullMboxContent.Count)
@@ -172,7 +178,6 @@ namespace PV_Report
                                     foreach (var token in encSubTokens)
                                     {
                                         subject += Encoding.UTF8.GetString(Convert.FromBase64String(token));
-
                                     }
                                 }
                                 catch
@@ -181,6 +186,7 @@ namespace PV_Report
                                 }
 
                                 _currentMail.Subject = subject;
+                                //StatusTextBlock.Text = subject;
 
                                 //"Solar.web Report für PV-Anlage  PV "
                                 if (!subject.StartsWith("Solar.web Report"))
@@ -191,7 +197,7 @@ namespace PV_Report
                                 }
                             }
 
-                            else if (!innerLine.Contains("@xxx")) // From [...]@xxx 
+                            if (!innerLine.Contains("@xxx")) // From [...]@xxx 
                             {
                                 innerMessageLines.Add(innerLine);
                                 innerCount++;
@@ -226,7 +232,7 @@ namespace PV_Report
             // all content read
             foreach (var solarWebMail in _allEmails.Where(mail => mail.DownloadLinks?.Count > 0))
             {
-                DownloadReport(Path.Combine(Directory.GetCurrentDirectory(), "Reports"), solarWebMail);
+                DownloadReport(Path.Combine(Directory.GetCurrentDirectory(), $"Reports.{DateTime.Now:MM.dd.yyy}.{_directorySuffix}"), solarWebMail);
             }
         }
 
@@ -307,7 +313,12 @@ namespace PV_Report
                                 _currentMail.FileName = fileName;
                             }
 
-                            using (var fs = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), "Reports", fileName), FileMode.Create))
+                            var directory = Path.Combine(Directory.GetCurrentDirectory(),
+                                $"Reports.{DateTime.Now:MM.dd.yyy}.{_directorySuffix}", _currentMail.Date.Year.ToString());
+                            if (!Directory.Exists(directory))
+                                Directory.CreateDirectory(directory);
+
+                            using (var fs = new FileStream(Path.Combine(directory, fileName), FileMode.Create))
                             {
                                 using (var writer = new StreamWriter(fs))
                                 {

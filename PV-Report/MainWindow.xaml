@@ -13,5 +13,6 @@
                    Margin="119,10,10,0" />
         <Button x:Name="button" Content="Parse MBox-File" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="104"
                 Click="OnParseMboxFileButtonClick"/>
+        <TextBlock x:Name="StatusTextBlock" HorizontalAlignment="Left" Margin="142,37,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="300"/>
     </Grid>
 </Window>
