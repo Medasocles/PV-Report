@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using MailClient;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -410,6 +411,17 @@ namespace PV_Report
             public bool HasError { get; set; }
             public Exception Exception { get; set; }
 
+        }
+
+        private void OnTryDirectMailConnection(object sender, RoutedEventArgs e)
+        {
+            var mailRepository = new MailRepository("imap.gmail.com", 993, true, "xxx@gmail.com", "xxx");
+            var allEmails = mailRepository.GetAllMails();
+
+            foreach (var email in allEmails)
+            {
+                Console.WriteLine(email);
+            }
         }
     }
 }
