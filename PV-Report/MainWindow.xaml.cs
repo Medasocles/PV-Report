@@ -136,6 +136,8 @@ namespace PV_Report
                 _contentStrings = new List<string>();
                 _directorySuffix = Guid.NewGuid().ToString();
 
+                // todo: fix error with PV.csv filename when mail has two attachments
+
                 for (var i = 0; i < _fullMboxContent.Count; i++)
                 {
                     var line = _fullMboxContent[i];
@@ -307,6 +309,9 @@ namespace PV_Report
                         {
                             var strB64 = string.Join("", attachmentLines);
                             var fileContent = Encoding.UTF8.GetString(Convert.FromBase64String(strB64));
+
+                            if (fileName.Equals("PV.csvPV.csv"))
+                            { }
 
                             if (fileName.Equals("PV.csv"))
                             {
