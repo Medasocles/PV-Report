@@ -1,9 +1,13 @@
-﻿<Application x:Class="PV_Report.App"
+﻿<Application x:Class="PvReport.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PV_Report"
+             xmlns:converter="clr-namespace:PvReport.Library.Converter"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="ForegroundBrush" Color="White" />
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#343434" />
+        
+        
+        <converter:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
     </Application.Resources>
 </Application>

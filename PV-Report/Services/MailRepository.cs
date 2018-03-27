@@ -3,7 +3,7 @@ using MailKit.Net.Imap;
 using MailKit.Search;
 using System.Collections.Generic;
 
-namespace MailClient
+namespace PvReport.Services
 {
     public class MailRepository
     {
