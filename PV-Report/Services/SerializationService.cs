@@ -18,5 +18,10 @@ namespace PvReport.Services
 
             return default(T);
         }
+
+        public static string JsonSerialize(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
     }
 }
