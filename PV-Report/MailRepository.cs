@@ -1,6 +1,7 @@
 ﻿using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
+using System;
 using System.Collections.Generic;
 
 namespace MailClient
@@ -63,7 +64,7 @@ namespace MailClient
                 //var fwd = new TcpForwarderSlim();
                 //fwd.Start(new IPEndPoint(IPAddress.Loopback, 4001), new IPEndPoint(IPAddress.Parse("74.125.206.109"), 993));
                 //client.Connect(fwd.Socket, mailServer, port);
-                
+
                 client.Connect(mailServer, port, ssl);
 
                 // Note: since we don't have an OAuth2 token, disable
@@ -75,7 +76,9 @@ namespace MailClient
                 // The Inbox folder is always available on all IMAP servers...
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadOnly);
-                var results = inbox.Search(SearchOptions.All, SearchQuery.HasGMailLabel("PV Report"));
+                var sq = SearchQuery.HasGMailLabel("PV Report")
+                    .And(SearchQuery.DeliveredAfter(DateTime.MinValue));
+                var results = inbox.Search(SearchOptions.All, sq);
                 foreach (var uniqueId in results.UniqueIds)
                 {
                     var message = inbox.GetMessage(uniqueId);

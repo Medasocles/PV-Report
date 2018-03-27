@@ -415,7 +415,6 @@ namespace PV_Report
 
             public bool HasError { get; set; }
             public Exception Exception { get; set; }
-
         }
 
         private void OnTryDirectMailConnection(object sender, RoutedEventArgs e)
