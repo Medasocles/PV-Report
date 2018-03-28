@@ -42,7 +42,7 @@ namespace PvReport.Services.Storage
                     sw.Write(infoJson);
                 }
             }
-                return true;
+            return true;
         }
 
         public static IEnumerable<MimeMessage> LoadMimeMessages()
@@ -75,7 +75,7 @@ namespace PvReport.Services.Storage
             {
                 var mimeMessage = mimeMsgArray[i];
                 {
-                    using (var fs = new FileStream(Path.Combine(directory, $"MimeMessage_{i}.eml"), FileMode.Create))
+                    using (var fs = new FileStream(Path.Combine(directory, $"MimeMessage_{mimeMessage.Date.DateTime:dd.MM.yyyy}-{mimeMessage.Date.DateTime:HH.mm}.eml"), FileMode.Create))
                     {
                         mimeMessage.WriteTo(FormatOptions.Default, fs);
                     }
@@ -86,14 +86,44 @@ namespace PvReport.Services.Storage
 
         public static void SavePvReport(string reportFileName, IMimeContent reportMimeContent)
         {
-            var directory = Path.Combine(Directory.GetCurrentDirectory(), PvReportsRepository);
+            var subDirectory = CheckPvReportType(reportFileName);
+            var directory = Path.Combine(Directory.GetCurrentDirectory(), PvReportsRepository, subDirectory);
+
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
-            
+
             using (var fs = new FileStream(Path.Combine(directory, reportFileName), FileMode.Create))
             {
                 reportMimeContent.DecodeTo(fs);
             }
-        }               
+        }
+
+        public static void SavePvReport(string reportFileName, Stream stream)
+        {
+            var subDirectory = CheckPvReportType(reportFileName);
+            var directory = Path.Combine(Directory.GetCurrentDirectory(), PvReportsRepository, subDirectory);
+            
+            var streamBuffer = new byte[1024 * 4];
+            using (var saveFileStream = new FileStream(Path.Combine(directory, reportFileName), FileMode.Create))
+            {
+                int receivedBytes;
+                while ((receivedBytes = stream.Read(streamBuffer, 0, streamBuffer.Length)) > 0)
+                {
+                    saveFileStream.Write(streamBuffer, 0, receivedBytes);
+                    saveFileStream.Flush();
+                }
+            }
+        }
+
+        private static string CheckPvReportType(string reportFileName)
+        {
+            var subDirectory = string.Empty;
+            if (reportFileName.Contains("Produktion") || reportFileName.Contains("Daily-KWH-Report"))
+                subDirectory = "Produktion";
+            else if (reportFileName.Contains("Energiebilanz") || reportFileName.Contains("Daily-Energiebilanz-Report"))
+                subDirectory = "Energiebilanz";
+            return subDirectory;
+        }
+
     }
 }

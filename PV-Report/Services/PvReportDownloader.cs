@@ -1,4 +1,5 @@
 ﻿using PvReport.Models;
+using PvReport.Services.Storage;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,21 +41,23 @@ namespace PvReport.Services
                         //if (!Directory.Exists(directory))
                         //    Directory.CreateDirectory(directory);
 
-                        var filePath = Path.Combine(storePath, fileName);
+                        //var filePath = Path.Combine(storePath, fileName);
 
                         using (var responseStream = httpWebResponse.GetResponseStream())
                         {
-                            var downBuffer = new byte[1024 * 4];
-                            using (var saveFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write,
-                                FileShare.ReadWrite))
-                            {
-                                int receivedBytes;
-                                while ((receivedBytes = responseStream.Read(downBuffer, 0, downBuffer.Length)) > 0)
-                                {
-                                    saveFileStream.Write(downBuffer, 0, receivedBytes);
-                                    saveFileStream.Flush();
-                                }
-                            }
+                            StorageService.SavePvReport(fileName, responseStream);
+
+                            //var downBuffer = new byte[1024 * 4];
+                            //using (var saveFileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write,
+                            //    FileShare.ReadWrite))
+                            //{
+                            //    int receivedBytes;
+                            //    while ((receivedBytes = responseStream.Read(downBuffer, 0, downBuffer.Length)) > 0)
+                            //    {
+                            //        saveFileStream.Write(downBuffer, 0, receivedBytes);
+                            //        saveFileStream.Flush();
+                            //    }
+                            //}
                         }
                     }
                 }

@@ -18,7 +18,7 @@ namespace PvReport.Services.Mail
             {
                 if (mimeMessage.Attachments.Any())
                 {
-                    ParseAttachments(mimeMessage.Attachments);
+                    ParseAttachments(mimeMessage.Attachments, mimeMessage.Date.DateTime);
                 }
                 else
                 {
@@ -31,11 +31,15 @@ namespace PvReport.Services.Mail
             return downloadData;
         }
 
-        private static void ParseAttachments(IEnumerable<MimeEntity> mimeMessageAttachments)
+        private static void ParseAttachments(IEnumerable<MimeEntity> mimeMessageAttachments, DateTime date)
         {
             foreach (var attachmentPart in mimeMessageAttachments.OfType<MimePart>())
             {
-                StorageService.SavePvReport(attachmentPart.FileName, attachmentPart.Content);
+                var fileName = attachmentPart.FileName;
+                if (fileName.Equals("PV.csv"))
+                    fileName = $"Daily-Energiebilanz-Report_Täglicher_Report_{date:dd_MM_yyyy}.csv";
+
+                StorageService.SavePvReport(fileName, attachmentPart.Content);
             }
         }
 

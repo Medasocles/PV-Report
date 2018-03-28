@@ -1,16 +1,15 @@
-﻿using MimeKit;
-using System.Collections.Generic;
+﻿using PvReport.Models;
 
 namespace PvReport.Services
 {
     public class PvReportParser
     {
-        public static int Parse(IEnumerable<MimeMessage> mimeMessages)
+        public static PvReportModel ParseCsvString(string csvContent)
         {
 
 
             // todo: return number of parsed messages
-            return 0;
+            return null;
         }
     }
 }
