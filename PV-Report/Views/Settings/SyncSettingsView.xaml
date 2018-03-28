@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="PvReport.Views.Settings.SyncSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PvReport.Views.Settings"
+             xmlns:models="clr-namespace:PvReport.Models"
+             mc:Ignorable="d" Foreground="{StaticResource ForegroundBrush}">
+
+    <d:DesignData.DataContext>
+        <models:SyncSettingsModel />
+    </d:DesignData.DataContext>
+
+    <Grid Background="LightSteelBlue">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="15"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="15"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Background="SteelBlue">
+            <TextBlock
+                   Text="GMail Einstellungen: " Margin="5,0,0,0"
+                   VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        </Border>
+
+        <TextBlock Grid.Column="2" Text="Benutzername:" 
+                   VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        <TextBox Grid.Column="4" Text="{Binding UserName, Mode=TwoWay}" 
+                     Width="200"
+                     VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+        <TextBlock Grid.Column="6" Text="Password:" 
+                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <!-- this is not secure in any way; typically passwords are not saved as is at all -->
+        <TextBox Grid.Column="8" Text="{Binding Password, Mode=TwoWay}" 
+                 Width="200"
+                 HorizontalAlignment="Left" VerticalAlignment="Center" />
+    </Grid>
+</UserControl>

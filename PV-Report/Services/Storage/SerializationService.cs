@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Globalization;
 
 namespace PvReport.Services.Storage
 {
@@ -9,6 +10,7 @@ namespace PvReport.Services.Storage
         {
             try
             {
+                SetJsonSettings();
                 return JsonConvert.DeserializeObject<T>(jsonString);
             }
             catch (Exception e)
@@ -21,7 +23,23 @@ namespace PvReport.Services.Storage
 
         public static string JsonSerialize(object obj)
         {
+            SetJsonSettings();
             return JsonConvert.SerializeObject(obj);
+        }
+
+        private static void SetJsonSettings()
+        {
+            JsonConvert.DefaultSettings =
+                () => new JsonSerializerSettings
+                {
+#if DEBUG
+                    Formatting = Formatting.Indented,
+#endif
+                    Culture = new CultureInfo("de-DE"),
+                    //DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                    //DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                    NullValueHandling = NullValueHandling.Include
+                };
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
+using MimeKit;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace PvReport.Services
 {
@@ -56,9 +56,9 @@ namespace PvReport.Services
             return messages;
         }
 
-        public IEnumerable<MimeKit.MimeMessage> GetAllMails(DateTime fromDate, string gmailLabel)
+        public IEnumerable<MimeMessage> GetAllMails(DateTime fromDate, string gmailLabel)
         {
-            var messages = new List<MimeKit.MimeMessage>();
+            var messages = new List<MimeMessage>();
 
             using (var client = new ImapClient())
             {

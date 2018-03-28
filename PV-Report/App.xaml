@@ -8,6 +8,7 @@
         <SolidColorBrush x:Key="BackgroundBrush" Color="#343434" />
         
         
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converter:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
     </Application.Resources>
 </Application>

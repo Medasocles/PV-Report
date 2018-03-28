@@ -37,8 +37,8 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.7.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.7.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.7.2.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.7.2\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="MailKit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
       <HintPath>..\packages\MailKit.2.0.2\lib\net45\MailKit.dll</HintPath>
@@ -72,10 +72,17 @@
     </ApplicationDefinition>
     <Compile Include="Library\Command\Command.cs" />
     <Compile Include="Library\Converter\BooleanToBrushConverter.cs" />
+    <Compile Include="Library\Converter\ToBooleanConverters.cs" />
+    <Compile Include="Library\Converter\ToVisibilityConverters.cs" />
     <Compile Include="Library\Exceptions\IncomatibleTypesException.cs" />
     <Compile Include="Library\MVVM\ModelBase\ModelBase.cs" />
     <Compile Include="Library\MVVM\ViewModelBase\ViewModelBase.cs" />
-    <Compile Include="Models\SynchronizationInfo.cs" />
+    <Compile Include="Models\PvReportModel.cs" />
+    <Compile Include="Models\PvReportDownloadInfo.cs" />
+    <Compile Include="Models\SyncSettingsModel.cs" />
+    <Compile Include="Services\PvReportDownloader.cs" />
+    <Compile Include="Services\Mail\PvReportMailParser.cs" />
+    <Compile Include="Services\PvReportParser.cs" />
     <Compile Include="Services\Storage\StorageService.cs" />
     <Compile Include="Services\Storage\SerializationService.cs" />
     <Compile Include="ViewModels\Mbox\MboxImportViewModel.cs" />
@@ -86,6 +93,9 @@
     </Compile>
     <Compile Include="Views\Mbox\MboxImportView.xaml.cs">
       <DependentUpon>MboxImportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\SyncSettingsView.xaml.cs">
+      <DependentUpon>SyncSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SyncPvReportsView.xaml.cs">
       <DependentUpon>SyncPvReportsView.xaml</DependentUpon>
@@ -98,7 +108,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Services\MailRepository.cs" />
+    <Compile Include="Services\Mail\MailRepository.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -108,6 +118,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Mbox\MboxImportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\SyncSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -143,6 +157,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\Icons\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

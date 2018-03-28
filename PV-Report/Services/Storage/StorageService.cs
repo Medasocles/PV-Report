@@ -9,26 +9,26 @@ namespace PvReport.Services.Storage
     public static class StorageService
     {
         private const string ConfigRepository = "Config";
-        private const string PvReportsRepository = "PvReports";
+        public const string PvReportsRepository = "PvReports";
         private const string PvReportMessagesRepository = "PvReportMails";
         private const string SyncronizationInfoFileName = "SyncInfo.cfg";
 
-        public static SynchronizationInfo LoadSynchronizationInfo()
+        public static SyncSettingsModel LoadSynchronizationInfo()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), ConfigRepository, SyncronizationInfoFileName);
 
             if (File.Exists(path))
             {
                 var syncInfoJson = File.ReadAllText(path);
-                var deserialized = SerializationService.JsonDeserialize<SynchronizationInfo>(syncInfoJson);
-                if (deserialized != default(SynchronizationInfo))
+                var deserialized = SerializationService.JsonDeserialize<SyncSettingsModel>(syncInfoJson);
+                if (deserialized != default(SyncSettingsModel))
                     return deserialized;
             }
 
-            return SynchronizationInfo.Empty;
+            return SyncSettingsModel.Default;
         }
 
-        public static bool SaveSynchronizationInfo(SynchronizationInfo info)
+        public static bool SaveSynchronizationInfo(SyncSettingsModel info)
         {
             var directory = Path.Combine(Directory.GetCurrentDirectory(), ConfigRepository);
             if (!Directory.Exists(directory))
@@ -83,5 +83,17 @@ namespace PvReport.Services.Storage
             }
             return true;
         }
+
+        public static void SavePvReport(string reportFileName, IMimeContent reportMimeContent)
+        {
+            var directory = Path.Combine(Directory.GetCurrentDirectory(), PvReportsRepository);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+            
+            using (var fs = new FileStream(Path.Combine(directory, reportFileName), FileMode.Create))
+            {
+                reportMimeContent.DecodeTo(fs);
+            }
+        }               
     }
 }

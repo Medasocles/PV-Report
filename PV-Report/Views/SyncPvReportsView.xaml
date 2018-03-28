@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PvReport.Views"
              xmlns:viewModels="clr-namespace:PvReport.ViewModels"
+             xmlns:settings="clr-namespace:PvReport.Views.Settings"
              mc:Ignorable="d" 
              Foreground="{StaticResource ForegroundBrush}">
 
@@ -16,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="5"/>
             <RowDefinition Height="25"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -26,13 +28,15 @@
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="1" Grid.Column="1" Text="Letzte Synchronisation: " 
                    VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
         <TextBlock Grid.Row="1" Grid.Column="3" 
-                   Text="{Binding SynchronizationInfo.LastSyncDate, StringFormat=HH:mm dd.MM.yyyy}" 
+                   Text="{Binding SyncSettingsModel.LastSyncDate, StringFormat=HH:mm dd.MM.yyyy}" 
                    FontWeight="SemiBold"
                    VerticalAlignment="Center"/>
         
@@ -41,8 +45,18 @@
                 Content="Jetzt Synchronisieren" 
                 Command="{Binding SyncReportsCommand}"/>
 
-        <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7" 
+        <ToggleButton x:Name="SyncSettingsTb"  
+                      Grid.Row="1" Grid.Column="7" 
+                      VerticalAlignment="Center"
+                      Content="Sync Settings"/>
+
+        <settings:SyncSettingsView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="9" 
+                                   Margin="0,5,0,0"
+                                   HorizontalAlignment="Left" VerticalAlignment="Center"
+                                   DataContext="{Binding SyncSettingsModel}"
+                                   Visibility="{Binding IsChecked, ElementName=SyncSettingsTb, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <!--<ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7" 
                      IsIndeterminate="True" HorizontalAlignment="Stretch" 
-                     VerticalAlignment="Bottom"/>
+                     VerticalAlignment="Bottom"/>-->
     </Grid>
 </UserControl>

@@ -1,8 +1,13 @@
-﻿using PvReport.Library.Command;
+﻿using MimeKit;
+using PvReport.Library.Command;
 using PvReport.Library.MVVM.ViewModelBase;
 using PvReport.Models;
 using PvReport.Services;
+using PvReport.Services.Mail;
 using PvReport.Services.Storage;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -10,41 +15,78 @@ namespace PvReport.ViewModels
 {
     public class SyncPvReportsViewModel : ViewModelBase
     {
-        private SynchronizationInfo _synchronizationInfo;
+        private SyncSettingsModel _syncSettingsModel;
 
         public SyncPvReportsViewModel()
         {
-            SynchronizationInfo = StorageService.LoadSynchronizationInfo();
+            SyncSettingsModel = StorageService.LoadSynchronizationInfo();
 
-            SyncReportsCommand = new Command<object>(OnSyncReportsCommandExecute);
+            SyncReportsCommand = new Command<object>(OnSyncReportsCommandExecute, OnSyncReportsCommandCanExecute);
+        }
 
-            // debug code
-            StorageService.LoadMimeMessages();
+        private bool OnSyncReportsCommandCanExecute(object o)
+        {
+            return !string.IsNullOrWhiteSpace(SyncSettingsModel?.UserName) && !string.IsNullOrWhiteSpace(SyncSettingsModel.Password);
         }
 
         public ICommand SyncReportsCommand { get; }
 
-        public SynchronizationInfo SynchronizationInfo
+        public SyncSettingsModel SyncSettingsModel
         {
-            get => _synchronizationInfo;
+            get => _syncSettingsModel;
             set
             {
-                _synchronizationInfo = value;
+                if (_syncSettingsModel != null)
+                    _syncSettingsModel.PropertyChanged -= OnSyncSettingsModelPropertyChanged;
+
+                _syncSettingsModel = value;
+
+                if (_syncSettingsModel != null)
+                {
+                    _syncSettingsModel.PropertyChanged += OnSyncSettingsModelPropertyChanged;
+                    StorageService.SaveSynchronizationInfo(_syncSettingsModel);
+                }
+
                 OnPropertyChanged();
             }
         }
 
-        private void OnSyncReportsCommandExecute(object o)
+        private void OnSyncSettingsModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            SynchronizeReportMailsAsync();
+            StorageService.SaveSynchronizationInfo(_syncSettingsModel);
         }
 
-        private async Task SynchronizeReportMailsAsync()
+        private async void OnSyncReportsCommandExecute(object o)
         {
-            var mailRepository = new MailRepository("imap.gmail.com", 993, true, "pvbauer.reports@gmail.com", "melstefbau217");
-            var allEmails = await Task.Run(() =>
-                mailRepository.GetAllMails(SynchronizationInfo.LastSyncDate, "PV Report"));
-            StorageService.SaveMimeMessages(allEmails);
+            if (await SynchronizeWithOnlineMailRepositoryAsync() is IEnumerable<MimeMessage> messages)
+            {
+                PvReportMailParser.Parse(messages);
+            }
+
+            // debug:
+            var pvReportDownloadModels = PvReportMailParser.Parse(StorageService.LoadMimeMessages());
+            PvReportDownloader.DownloadReports(StorageService.PvReportsRepository, pvReportDownloadModels);
+        }
+
+        private async Task<IEnumerable<MimeMessage>> SynchronizeWithOnlineMailRepositoryAsync()
+        {
+            try
+            {
+                var mailRepository = new MailRepository(SyncSettingsModel.ServerAddressName, SyncSettingsModel.ServerPort, true, SyncSettingsModel.UserName, SyncSettingsModel.Password);
+                var allEmails = await Task.Run(() => mailRepository.GetAllMails(SyncSettingsModel.LastSyncDate, "PV Report"));
+                var allMailArray = allEmails as MimeMessage[] ?? allEmails.ToArray();
+                if (allMailArray.Any())
+                {
+                    SyncSettingsModel.LastSyncDate = DateTime.Now;
+                    StorageService.SaveMimeMessages(allMailArray);
+                }
+
+                return allMailArray;
+            }
+            catch (Exception e)
+            { }
+
+            return null;
         }
     }
 }
