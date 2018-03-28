@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace PvReport.Services
+namespace PvReport.Services.Storage
 {
-    public static class RepositoryService
+    public static class StorageService
     {
         private const string ConfigRepository = "Config";
         private const string PvReportsRepository = "PvReports";
@@ -30,12 +30,22 @@ namespace PvReport.Services
 
         public static bool SaveSynchronizationInfo(SynchronizationInfo info)
         {
-            // todo: serialize and save
+            var directory = Path.Combine(Directory.GetCurrentDirectory(), ConfigRepository);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
 
-            return true;
+            var infoJson = SerializationService.JsonSerialize(info);
+            using (var fs = new FileStream(Path.Combine(directory, SyncronizationInfoFileName), FileMode.Create))
+            {
+                using (var sw = new StreamWriter(fs))
+                {
+                    sw.Write(infoJson);
+                }
+            }
+                return true;
         }
 
-        public static IEnumerable<MimeMessage> LoadMailsFromStorage()
+        public static IEnumerable<MimeMessage> LoadMimeMessages()
         {
             var mimeMessages = new List<MimeMessage>();
             var path = Path.Combine(Directory.GetCurrentDirectory(), PvReportMessagesRepository);
@@ -54,7 +64,7 @@ namespace PvReport.Services
             return mimeMessages;
         }
 
-        public static bool SaveMailsToFile(IEnumerable<MimeMessage> mimeMessages)
+        public static bool SaveMimeMessages(IEnumerable<MimeMessage> mimeMessages)
         {
             var directory = Path.Combine(Directory.GetCurrentDirectory(), PvReportMessagesRepository);
             if (!Directory.Exists(directory))

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace PvReport.Services
+namespace PvReport.Services.Storage
 {
     public static class SerializationService
     {

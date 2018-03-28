@@ -2,6 +2,7 @@
 using PvReport.Library.MVVM.ViewModelBase;
 using PvReport.Models;
 using PvReport.Services;
+using PvReport.Services.Storage;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -13,12 +14,12 @@ namespace PvReport.ViewModels
 
         public SyncPvReportsViewModel()
         {
-            SynchronizationInfo = RepositoryService.LoadSynchronizationInfo();
+            SynchronizationInfo = StorageService.LoadSynchronizationInfo();
 
             SyncReportsCommand = new Command<object>(OnSyncReportsCommandExecute);
 
             // debug code
-            RepositoryService.LoadMailsFromStorage();
+            StorageService.LoadMimeMessages();
         }
 
         public ICommand SyncReportsCommand { get; }
@@ -43,7 +44,7 @@ namespace PvReport.ViewModels
             var mailRepository = new MailRepository("imap.gmail.com", 993, true, "pvbauer.reports@gmail.com", "melstefbau217");
             var allEmails = await Task.Run(() =>
                 mailRepository.GetAllMails(SynchronizationInfo.LastSyncDate, "PV Report"));
-            RepositoryService.SaveMailsToFile(allEmails);
+            StorageService.SaveMimeMessages(allEmails);
         }
     }
 }

@@ -76,8 +76,8 @@
     <Compile Include="Library\MVVM\ModelBase\ModelBase.cs" />
     <Compile Include="Library\MVVM\ViewModelBase\ViewModelBase.cs" />
     <Compile Include="Models\SynchronizationInfo.cs" />
-    <Compile Include="Services\RepositoryService.cs" />
-    <Compile Include="Services\SerializationService.cs" />
+    <Compile Include="Services\Storage\StorageService.cs" />
+    <Compile Include="Services\Storage\SerializationService.cs" />
     <Compile Include="ViewModels\Mbox\MboxImportViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SyncPvReportsViewModel.cs" />
