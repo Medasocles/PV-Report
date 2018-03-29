@@ -2,14 +2,13 @@
 using PvReport.Services.Storage;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 
 namespace PvReport.Services
 {
     public static class PvReportDownloader
     {
-        public static void DownloadReports(string storePath, IEnumerable<PvReportDownloadInfo> downloadInfos)
+        public static void DownloadReports(IEnumerable<PvReportDownloadInfo> downloadInfos)
         {
             foreach (var downloadInfo in downloadInfos)
             {
