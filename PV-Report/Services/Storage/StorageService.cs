@@ -1,5 +1,6 @@
 ﻿using MimeKit;
 using PvReport.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,18 +9,24 @@ namespace PvReport.Services.Storage
 {
     public static class StorageService
     {
-        private const string ConfigRepository = "Config";
-        public const string PvReportsRepository = "PvReports";
-        private const string PvReportMessagesRepository = "PvReportMails";
-        private const string SyncronizationInfoFileName = "SyncInfo.cfg";
+        // static folder names and paths
+        public static string RepositoryRootFolder => Environment.SpecialFolder.LocalApplicationData.ToString();
+        public static string ConfigRepositoryPath => Path.Combine(RepositoryRootFolder, ConfigRepositoryName);
+        public static string PvReportRepositoryName => "PvReports";
+        public static string PvReportRepositoryPath => Path.Combine(RepositoryRootFolder, PvReportRepositoryName);
+        public static string PvReportMailsRepositoryName => "PvReportMails";
+        public static string PvReportMailsRepositoryPath => Path.Combine(RepositoryRootFolder, PvReportMailsRepositoryName); public static string ConfigRepositoryName => "Config";
+        
+        // static file names and paths
+        public static string SyncSettingsFileName = "SyncSettings.cfg";
+        public static string SyncSettingsFilePath = Path.Combine(ConfigRepositoryPath, SyncSettingsFileName);
+
 
         public static SyncSettingsModel LoadSynchronizationInfo()
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), ConfigRepository, SyncronizationInfoFileName);
-
-            if (File.Exists(path))
+            if (File.Exists(SyncSettingsFilePath))
             {
-                var syncInfoJson = File.ReadAllText(path);
+                var syncInfoJson = File.ReadAllText(SyncSettingsFilePath);
                 var deserialized = SerializationService.JsonDeserialize<SyncSettingsModel>(syncInfoJson);
                 if (deserialized != default(SyncSettingsModel))
                     return deserialized;
@@ -30,12 +37,11 @@ namespace PvReport.Services.Storage
 
         public static bool SaveSynchronizationInfo(SyncSettingsModel info)
         {
-            var directory = Path.Combine(Directory.GetCurrentDirectory(), ConfigRepository);
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
+            if (!Directory.Exists(ConfigRepositoryPath))
+                Directory.CreateDirectory(ConfigRepositoryPath);
 
             var infoJson = SerializationService.JsonSerialize(info);
-            using (var fs = new FileStream(Path.Combine(directory, SyncronizationInfoFileName), FileMode.Create))
+            using (var fs = new FileStream(SyncSettingsFilePath, FileMode.Create))
             {
                 using (var sw = new StreamWriter(fs))
                 {
@@ -48,10 +54,9 @@ namespace PvReport.Services.Storage
         public static IEnumerable<MimeMessage> LoadMimeMessages()
         {
             var mimeMessages = new List<MimeMessage>();
-            var path = Path.Combine(Directory.GetCurrentDirectory(), PvReportMessagesRepository);
-            if (Directory.Exists(path))
+            if (Directory.Exists(PvReportMailsRepositoryPath))
             {
-                foreach (var file in Directory.GetFiles(path))
+                foreach (var file in Directory.GetFiles(PvReportMailsRepositoryPath))
                 {
                     using (var fs = new FileStream(file, FileMode.Open))
                     {
@@ -66,16 +71,15 @@ namespace PvReport.Services.Storage
 
         public static bool SaveMimeMessages(IEnumerable<MimeMessage> mimeMessages)
         {
-            var directory = Path.Combine(Directory.GetCurrentDirectory(), PvReportMessagesRepository);
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
+            if (!Directory.Exists(PvReportMailsRepositoryPath))
+                Directory.CreateDirectory(PvReportMailsRepositoryPath);
 
             var mimeMsgArray = mimeMessages as MimeMessage[] ?? mimeMessages.ToArray();
             for (var i = 0; i < mimeMsgArray.Count(); i++)
             {
                 var mimeMessage = mimeMsgArray[i];
                 {
-                    using (var fs = new FileStream(Path.Combine(directory, $"MimeMessage_{mimeMessage.Date.DateTime:dd.MM.yyyy}-{mimeMessage.Date.DateTime:HH.mm}.eml"), FileMode.Create))
+                    using (var fs = new FileStream(Path.Combine(PvReportMailsRepositoryPath, $"MimeMessage_{mimeMessage.Date.DateTime:dd.MM.yyyy}-{mimeMessage.Date.DateTime:HH.mm}.eml"), FileMode.Create))
                     {
                         mimeMessage.WriteTo(FormatOptions.Default, fs);
                     }
@@ -87,7 +91,7 @@ namespace PvReport.Services.Storage
         public static void SavePvReport(string reportFileName, IMimeContent reportMimeContent)
         {
             var subDirectory = CheckPvReportType(reportFileName);
-            var directory = Path.Combine(Directory.GetCurrentDirectory(), PvReportsRepository, subDirectory);
+            var directory = Path.Combine(PvReportRepositoryPath, subDirectory);
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
@@ -101,7 +105,7 @@ namespace PvReport.Services.Storage
         public static void SavePvReport(string reportFileName, Stream stream)
         {
             var subDirectory = CheckPvReportType(reportFileName);
-            var directory = Path.Combine(Directory.GetCurrentDirectory(), PvReportsRepository, subDirectory);
+            var directory = Path.Combine(PvReportRepositoryPath, subDirectory);
             
             var streamBuffer = new byte[1024 * 4];
             using (var saveFileStream = new FileStream(Path.Combine(directory, reportFileName), FileMode.Create))
