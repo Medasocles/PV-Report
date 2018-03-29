@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
 
 namespace PvReport
 {
@@ -7,5 +8,9 @@ namespace PvReport
     /// </summary>
     public partial class App : Application
     {
+        private void OnUnhandledDispatcherException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            
+        }
     }
 }
