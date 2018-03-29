@@ -14,9 +14,17 @@ namespace PvReport.Services.Storage
         public static string ConfigRepositoryPath => Path.Combine(RepositoryRootFolder, ConfigRepositoryName);
         public static string PvReportRepositoryName => "PvReports";
         public static string PvReportRepositoryPath => Path.Combine(RepositoryRootFolder, PvReportRepositoryName);
+        public static string PvReportBalanceRepositoryName => "Energiebilanz";
+        public static string PvReportBalanceRepositoryPath =>
+            Path.Combine(PvReportRepositoryPath, PvReportBalanceRepositoryName);
+        public static string PvReportProductionRepositoryName => "Produktion";
+        public static string PvReportProductionRepositoryPath =>
+            Path.Combine(PvReportRepositoryPath, PvReportProductionRepositoryName);
         public static string PvReportMailsRepositoryName => "PvReportMails";
-        public static string PvReportMailsRepositoryPath => Path.Combine(RepositoryRootFolder, PvReportMailsRepositoryName); public static string ConfigRepositoryName => "Config";
-        
+        public static string PvReportMailsRepositoryPath =>
+            Path.Combine(RepositoryRootFolder, PvReportMailsRepositoryName);
+        public static string ConfigRepositoryName => "Config";
+
         // static file names and paths
         public static string SyncSettingsFileName = "SyncSettings.cfg";
         public static string SyncSettingsFilePath = Path.Combine(ConfigRepositoryPath, SyncSettingsFileName);
@@ -48,6 +56,7 @@ namespace PvReport.Services.Storage
                     sw.Write(infoJson);
                 }
             }
+
             return true;
         }
 
@@ -79,12 +88,17 @@ namespace PvReport.Services.Storage
             {
                 var mimeMessage = mimeMsgArray[i];
                 {
-                    using (var fs = new FileStream(Path.Combine(PvReportMailsRepositoryPath, $"MimeMessage_{mimeMessage.Date.DateTime:dd.MM.yyyy}-{mimeMessage.Date.DateTime:HH.mm}.eml"), FileMode.Create))
+                    using (var fs =
+                        new FileStream(
+                            Path.Combine(PvReportMailsRepositoryPath,
+                                $"MimeMessage_{mimeMessage.Date.DateTime:dd.MM.yyyy}-{mimeMessage.Date.DateTime:HH.mm}.eml"),
+                            FileMode.Create))
                     {
                         mimeMessage.WriteTo(FormatOptions.Default, fs);
                     }
                 }
             }
+
             return true;
         }
 
@@ -106,7 +120,7 @@ namespace PvReport.Services.Storage
         {
             var subDirectory = CheckPvReportType(reportFileName);
             var directory = Path.Combine(PvReportRepositoryPath, subDirectory);
-            
+
             var streamBuffer = new byte[1024 * 4];
             using (var saveFileStream = new FileStream(Path.Combine(directory, reportFileName), FileMode.Create))
             {
@@ -129,5 +143,37 @@ namespace PvReport.Services.Storage
             return subDirectory;
         }
 
+
+        /// <summary>
+        /// Loads all PV-Reports that contain balance information.
+        /// Means, all reports that contain, how much has been produced and consumed.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<IEnumerable<string>> LoadPvReportContents()
+        {
+            var contents = new List<List<string>>();
+
+            if (Directory.Exists(PvReportBalanceRepositoryPath))
+            {
+                foreach (var file in Directory.GetFiles(PvReportBalanceRepositoryPath))
+                {
+                    using (var fs = new FileStream(file, FileMode.Open))
+                    {
+                        using (var sr = new StreamReader(fs))
+                        {
+                            var strings = new List<string>();
+                            var line = string.Empty;
+                            while ((line = sr.ReadLine()) != null)
+                            {
+                                strings.Add(line);
+                            }
+                            contents.Add(strings);
+                        }
+                    }
+                }
+            }
+
+            return contents;
+        }
     }
 }

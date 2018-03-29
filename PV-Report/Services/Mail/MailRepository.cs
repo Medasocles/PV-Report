@@ -10,16 +10,19 @@ namespace PvReport.Services
     public class MailRepository
     {
         private readonly string _mailServer, _login, _password;
+        private readonly ProgressNotificationService _progressNotificationService;
         private readonly int _port;
         private readonly bool _ssl;
 
-        public MailRepository(string mailServer, int port, bool ssl, string login, string password)
+        public MailRepository(string mailServer, int port, bool ssl, string login, string password,
+            ProgressNotificationService progressNotificationService)
         {
             _mailServer = mailServer;
             _port = port;
             _ssl = ssl;
             _login = login;
             _password = password;
+            _progressNotificationService = progressNotificationService;
         }
 
         public IEnumerable<string> GetUnreadMails()
@@ -45,7 +48,6 @@ namespace PvReport.Services
                     var message = inbox.GetMessage(uniqueId);
 
                     messages.Add(message.HtmlBody);
-
                     //Mark message as read
                     //inbox.AddFlags(uniqueId, MessageFlags.Seen, true);
                 }
@@ -62,8 +64,10 @@ namespace PvReport.Services
 
             using (var client = new ImapClient())
             {
+                _progressNotificationService.Notify("Verbinde mit Mailserver...");
                 client.Connect(_mailServer, _port, _ssl);
 
+                _progressNotificationService.Notify("Melde Benutzer an Mailserver an...");
                 // Note: since we don't have an OAuth2 token, disable
                 // the XOAUTH2 authentication mechanism.
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
@@ -78,13 +82,17 @@ namespace PvReport.Services
                     .And(SearchQuery.DeliveredAfter(fromDate));
 
                 var results = inbox.Search(SearchOptions.All, sq);
+                _progressNotificationService.Notify($"Starte Download von {results.Count} Report-EMails.");
 
+                var count = 1;
                 foreach (var uniqueId in results.UniqueIds)
                 {
+                    _progressNotificationService.Notify($"Lade Email {count}/{results.Count} herunter.");
                     var message = inbox.GetMessage(uniqueId);
 
                     messages.Add(message);
 
+                    count++;
                     //Mark message as read
                     //inbox.AddFlags(uniqueId, MessageFlags.Seen, true);
                 }

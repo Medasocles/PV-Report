@@ -5,15 +5,20 @@ using PvReport.Services.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace PvReport.Services.Mail
 {
     public static class PvReportMailParser
     {
-        public static IEnumerable<PvReportDownloadInfo> Parse(IEnumerable<MimeMessage> mimeMessages)
+        public static async Task<IEnumerable<PvReportDownloadInfo>> ParseAsync(IEnumerable<MimeMessage> mimeMessages)
+        {
+            return await Task.Run(() => DoParse(mimeMessages));
+        }
+
+        private static List<PvReportDownloadInfo> DoParse(IEnumerable<MimeMessage> mimeMessages)
         {
             var downloadData = new List<PvReportDownloadInfo>();
-
             foreach (var mimeMessage in mimeMessages)
             {
                 if (mimeMessage.Attachments.Any())

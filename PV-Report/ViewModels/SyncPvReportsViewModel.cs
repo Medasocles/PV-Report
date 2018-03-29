@@ -16,10 +16,15 @@ namespace PvReport.ViewModels
 {
     public class SyncPvReportsViewModel : ViewModelBase
     {
+        private readonly PvReportService _pvReportService;
+        private readonly ProgressNotificationService _progressNotificationService;
         private SyncSettingsModel _syncSettingsModel;
 
-        public SyncPvReportsViewModel()
+        public SyncPvReportsViewModel(PvReportService pvReportService,
+            ProgressNotificationService progressNotificationService)
         {
+            _pvReportService = pvReportService;
+            _progressNotificationService = progressNotificationService;
             SyncSettingsModel = StorageService.LoadSynchronizationInfo();
 
             SyncReportsCommand = new Command<object>(OnSyncReportsCommandExecute, OnSyncReportsCommandCanExecute);
@@ -61,14 +66,29 @@ namespace PvReport.ViewModels
 
         private async void OnSyncReportsCommandExecute(object o)
         {
-            if (await SynchronizeWithOnlineMailRepositoryAsync() is IEnumerable<MimeMessage> messages)
+            _progressNotificationService.Notify("Starte Synchronisation...");
+            // synchronize with online pv-reports from mail-repo
+            if (await DownloadLatestReportMailsAsync() is IEnumerable<MimeMessage> messages)
             {
-                PvReportMailParser.Parse(messages);
-            }
+                // parse the downloaded mails for download links
+                var newDownloadInfos = await PvReportMailParser.ParseAsync(messages);
+                
+                // download the real report-files
+                await PvReportDownloader.DownloadReportsAsync(newDownloadInfos, _progressNotificationService);
 
-            // debug:
-            var pvReportDownloadModels = PvReportMailParser.Parse(StorageService.LoadMimeMessages());
-            PvReportDownloader.DownloadReports(pvReportDownloadModels);
+                _progressNotificationService.Notify("Synchronisation abgeschlossen.");
+                // get the real data
+                _pvReportService.LoadPvReports();
+            }
+            else
+            {
+                
+            }
+            //else // load the existing 
+            //{
+            //    var pvReportDownloadModels = PvReportMailParser.Parse(StorageService.LoadMimeMessages());
+            //    PvReportDownloader.DownloadReports(pvReportDownloadModels);
+            //}
         }
 
         private void OnOpenRepostoryFolderCommandExecute(object o)
@@ -76,17 +96,24 @@ namespace PvReport.ViewModels
             Process.Start(StorageService.RepositoryRootFolder);
         }
 
-        private async Task<IEnumerable<MimeMessage>> SynchronizeWithOnlineMailRepositoryAsync()
+        /// <summary>
+        /// Download all Report-EMails after the LastSyncDate with gmail-label 'PV Report'
+        /// </summary>
+        /// <returns></returns>
+        private async Task<IEnumerable<MimeMessage>> DownloadLatestReportMailsAsync()
         {
             try
             {
-                var mailRepository = new MailRepository(SyncSettingsModel.ServerAddressName, SyncSettingsModel.ServerPort, true, SyncSettingsModel.UserName, SyncSettingsModel.Password);
+                var mailRepository = new MailRepository(SyncSettingsModel.ServerAddressName,
+                    SyncSettingsModel.ServerPort, true, SyncSettingsModel.UserName, SyncSettingsModel.Password,
+                    _progressNotificationService);
                 var allEmails = await Task.Run(() => mailRepository.GetAllMails(SyncSettingsModel.LastSyncDate, "PV Report"));
                 var allMailArray = allEmails as MimeMessage[] ?? allEmails.ToArray();
                 if (allMailArray.Any())
                 {
-                    SyncSettingsModel.LastSyncDate = DateTime.Now;
+                    _progressNotificationService.Notify("Speichere heruntergeladene EMails.");
                     StorageService.SaveMimeMessages(allMailArray);
+                    SyncSettingsModel.LastSyncDate = DateTime.Now;
                 }
 
                 return allMailArray;

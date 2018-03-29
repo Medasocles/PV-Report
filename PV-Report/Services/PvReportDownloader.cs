@@ -3,15 +3,23 @@ using PvReport.Services.Storage;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace PvReport.Services
 {
     public static class PvReportDownloader
     {
-        public static void DownloadReports(IEnumerable<PvReportDownloadInfo> downloadInfos)
+        public static async Task DownloadReportsAsync(IEnumerable<PvReportDownloadInfo> downloadInfos,
+            ProgressNotificationService progressNotificationService)
+        {
+            await Task.Run(() => DownloadReports(downloadInfos, progressNotificationService));
+        }
+
+        public static void DownloadReports(IEnumerable<PvReportDownloadInfo> downloadInfos, ProgressNotificationService progressNotificationService)
         {
             foreach (var downloadInfo in downloadInfos)
             {
+                progressNotificationService.Notify($"Download PV-Report from {downloadInfo.From:d}");
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(downloadInfo.DownloadLink);
 
                 try
