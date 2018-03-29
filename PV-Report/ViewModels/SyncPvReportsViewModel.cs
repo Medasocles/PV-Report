@@ -7,6 +7,7 @@ using PvReport.Services.Mail;
 using PvReport.Services.Storage;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -22,14 +23,11 @@ namespace PvReport.ViewModels
             SyncSettingsModel = StorageService.LoadSynchronizationInfo();
 
             SyncReportsCommand = new Command<object>(OnSyncReportsCommandExecute, OnSyncReportsCommandCanExecute);
-        }
-
-        private bool OnSyncReportsCommandCanExecute(object o)
-        {
-            return !string.IsNullOrWhiteSpace(SyncSettingsModel?.UserName) && !string.IsNullOrWhiteSpace(SyncSettingsModel.Password);
+            OpenRepositoryFolderCommand = new Command<object>(OnOpenRepostoryFolderCommandExecute);
         }
 
         public ICommand SyncReportsCommand { get; }
+        public ICommand OpenRepositoryFolderCommand { get; }
 
         public SyncSettingsModel SyncSettingsModel
         {
@@ -56,6 +54,11 @@ namespace PvReport.ViewModels
             StorageService.SaveSynchronizationInfo(_syncSettingsModel);
         }
 
+        private bool OnSyncReportsCommandCanExecute(object o)
+        {
+            return !string.IsNullOrWhiteSpace(SyncSettingsModel?.UserName) && !string.IsNullOrWhiteSpace(SyncSettingsModel.Password);
+        }
+
         private async void OnSyncReportsCommandExecute(object o)
         {
             if (await SynchronizeWithOnlineMailRepositoryAsync() is IEnumerable<MimeMessage> messages)
@@ -65,7 +68,12 @@ namespace PvReport.ViewModels
 
             // debug:
             var pvReportDownloadModels = PvReportMailParser.Parse(StorageService.LoadMimeMessages());
-            PvReportDownloader.DownloadReports(StorageService.PvReportsRepository, pvReportDownloadModels);
+            PvReportDownloader.DownloadReports(pvReportDownloadModels);
+        }
+
+        private void OnOpenRepostoryFolderCommandExecute(object o)
+        {
+            Process.Start(StorageService.RepositoryRootFolder);
         }
 
         private async Task<IEnumerable<MimeMessage>> SynchronizeWithOnlineMailRepositoryAsync()
