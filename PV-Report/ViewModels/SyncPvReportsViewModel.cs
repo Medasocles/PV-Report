@@ -20,6 +20,11 @@ namespace PvReport.ViewModels
         private readonly ProgressNotificationService _progressNotificationService;
         private SyncSettingsModel _syncSettingsModel;
 
+        public SyncPvReportsViewModel()
+        {
+            
+        }
+
         public SyncPvReportsViewModel(PvReportService pvReportService,
             ProgressNotificationService progressNotificationService)
         {
@@ -73,22 +78,17 @@ namespace PvReport.ViewModels
                 // parse the downloaded mails for download links
                 var newDownloadInfos = await PvReportMailParser.ParseAsync(messages);
                 
-                // download the real report-files
+                // download the report-files
                 await PvReportDownloader.DownloadReportsAsync(newDownloadInfos, _progressNotificationService);
 
                 _progressNotificationService.Notify("Synchronisation abgeschlossen.");
-                // get the real data
-                _pvReportService.LoadPvReports();
             }
-            else
-            {
-                
-            }
-            //else // load the existing 
-            //{
-            //    var pvReportDownloadModels = PvReportMailParser.Parse(StorageService.LoadMimeMessages());
-            //    PvReportDownloader.DownloadReports(pvReportDownloadModels);
-            //}
+
+            // load reports
+            _pvReportService.LoadPvReports();
+
+            // set sync date
+            SyncSettingsModel.LastSyncDate = _pvReportService.PvReports.Max(report => report.Date);
         }
 
         private void OnOpenRepostoryFolderCommandExecute(object o)
@@ -113,7 +113,6 @@ namespace PvReport.ViewModels
                 {
                     _progressNotificationService.Notify("Speichere heruntergeladene EMails.");
                     StorageService.SaveMimeMessages(allMailArray);
-                    SyncSettingsModel.LastSyncDate = DateTime.Now;
                 }
 
                 return allMailArray;
