@@ -1,5 +1,6 @@
 ﻿using PvReport.Library.MVVM.ViewModelBase;
 using PvReport.Services;
+using PvReport.ViewModels.Evaluation;
 
 namespace PvReport.ViewModels
 {
@@ -9,13 +10,16 @@ namespace PvReport.ViewModels
         private ProgressNotificationService _progressNotificationService;
         private SyncPvReportsViewModel _syncPvReportsViewModel;
         private ProgressVisualizationViewModel _progressVisualizationViewModel;
+        private YearSummaryViewModel _yearSummaryViewModel;
 
         public MainViewModel()
         {
             _pvReportService = new PvReportService();
+            _pvReportService.Initialize();
             _progressNotificationService = new ProgressNotificationService();
             SyncPvReportsViewModel = new SyncPvReportsViewModel(_pvReportService, _progressNotificationService);
             ProgressVisualizationViewModel = new ProgressVisualizationViewModel(_progressNotificationService);
+            YearSummaryViewModel = new YearSummaryViewModel(_pvReportService);
         }
 
         public SyncPvReportsViewModel SyncPvReportsViewModel
@@ -34,6 +38,16 @@ namespace PvReport.ViewModels
             set
             {
                 _progressVisualizationViewModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public YearSummaryViewModel YearSummaryViewModel
+        {
+            get => _yearSummaryViewModel;
+            set
+            {
+                _yearSummaryViewModel = value;
                 OnPropertyChanged();
             }
         }
