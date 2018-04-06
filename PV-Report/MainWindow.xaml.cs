@@ -1,7 +1,8 @@
-﻿using PvReport.Services;
+﻿using System.Globalization;
+using System.Threading;
 using PvReport.ViewModels;
-using System;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace PvReport
 {
@@ -12,6 +13,11 @@ namespace PvReport
     {
         public MainWindow()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(
+                XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+
             DataContext = this;
 
             InitializeComponent();
