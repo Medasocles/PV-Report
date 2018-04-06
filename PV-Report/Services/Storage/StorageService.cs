@@ -4,13 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace PvReport.Services.Storage
 {
     public static class StorageService
     {
         // static folder names and paths
-        public static string RepositoryRootFolder => Environment.SpecialFolder.LocalApplicationData.ToString();
+        public static string RepositoryRootFolder =>
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PV_Report");
         public static string ConfigRepositoryPath => Path.Combine(RepositoryRootFolder, ConfigRepositoryName);
         public static string PvReportRepositoryName => "PvReports";
         public static string PvReportRepositoryPath => Path.Combine(RepositoryRootFolder, PvReportRepositoryName);
