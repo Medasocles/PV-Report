@@ -23,6 +23,6 @@
         <views:SyncPvReportsView Grid.Row="0" DataContext="{Binding SyncPvReportsViewModel}"/>
         <views:ProgressVisualizer Grid.Row="1" 
                                   DataContext="{Binding ProgressVisualizationViewModel}"/>
-        <evaluationViews:PvYearView Grid.Row="2"/>
+        <evaluationViews:YearSummaryView Grid.Row="2" DataContext="{Binding YearSummaryViewModel}"/>
     </Grid>
 </UserControl>

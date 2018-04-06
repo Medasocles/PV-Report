@@ -89,6 +89,7 @@
     <Compile Include="Services\PvReportService.cs" />
     <Compile Include="Services\Storage\StorageService.cs" />
     <Compile Include="Services\Storage\SerializationService.cs" />
+    <Compile Include="ViewModels\Evaluation\YearSummaryViewModel.cs" />
     <Compile Include="ViewModels\Mbox\MboxImportViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProgressVisualizationViewModel.cs" />
@@ -105,8 +106,8 @@
     <Compile Include="Views\ProgressVisualizationView.xaml.cs">
       <DependentUpon>ProgressVisualizationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Evaluation\PvYearView.xaml.cs">
-      <DependentUpon>PvYearView.xaml</DependentUpon>
+    <Compile Include="Views\Evaluation\YearSummaryView.xaml.cs">
+      <DependentUpon>YearSummaryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Settings\SyncSettingsView.xaml.cs">
       <DependentUpon>SyncSettingsView.xaml</DependentUpon>
@@ -151,7 +152,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Evaluation\PvYearView.xaml">
+    <Page Include="Views\Evaluation\YearSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
