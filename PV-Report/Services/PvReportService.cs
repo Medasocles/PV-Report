@@ -2,6 +2,7 @@
 using PvReport.Services.Storage;
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 
 namespace PvReport.Services
@@ -28,20 +29,28 @@ namespace PvReport.Services
                 if (contentArray.Length == 3)
                 {
                     var tokens = contentArray[2].Split(',');
-
-                    PvReports.Add(new PvReportModel
+                    var date = DateTime.Parse(tokens[0]);
+                    if (!PvReports.Any(report => report.Date.Equals(date)))
                     {
-                        Date = DateTime.Parse(tokens[0]),
-                        TotalProduction = Convert.ToDouble(tokens[1]),
-                        TotalConsumption = Convert.ToDouble(tokens[2]),
-                        SelfConsumption = Convert.ToDouble(tokens[3]),
-                        GridFeedIn = Convert.ToDouble(tokens[4]),
-                        GridTakeOut = Convert.ToDouble(tokens[5])
-                    });
+                        PvReports.Add(new PvReportModel
+                        {
+                            Date = date,
+                            TotalProduction = double.Parse(tokens[1], CultureInfo.InvariantCulture),
+                            TotalConsumption = double.Parse(tokens[2], CultureInfo.InvariantCulture),
+                            SelfConsumption = double.Parse(tokens[3], CultureInfo.InvariantCulture),
+                            GridFeedIn = double.Parse(tokens[4], CultureInfo.InvariantCulture),
+                            GridTakeOut = double.Parse(tokens[5], CultureInfo.InvariantCulture)
+                        });
+                    }
                 }
             }
             
             return true;
+        }
+
+        public void Initialize()
+        {
+            LoadPvReports();
         }
     }
 }
