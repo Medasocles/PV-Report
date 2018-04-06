@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:PvReport.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="DarkGray">
+    <Grid Background="MidnightBlue" >
             <TextBlock Text="{Binding ProgressMessage, Mode=OneWay}" 
+                       Margin="5"
                        VerticalAlignment="Center"
                        TextWrapping="Wrap" />
     </Grid>
