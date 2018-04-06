@@ -2,6 +2,7 @@
 using PvReport.Services.Storage;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -17,9 +18,13 @@ namespace PvReport.Services
 
         public static void DownloadReports(IEnumerable<PvReportDownloadInfo> downloadInfos, ProgressNotificationService progressNotificationService)
         {
-            foreach (var downloadInfo in downloadInfos)
+            var count = 0;
+            var downloadInfosList = downloadInfos as PvReportDownloadInfo[] ?? downloadInfos.OrderBy(info => info.From).ToArray();
+            var totalCount = downloadInfosList.Length;
+            foreach (var downloadInfo in downloadInfosList)
             {
-                progressNotificationService.Notify($"Download PV-Report from {downloadInfo.From:d}");
+                count++;
+                progressNotificationService.Notify($"Download PV-Report {count}/{totalCount} from {downloadInfo.From:d}");
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(downloadInfo.DownloadLink);
 
                 try
