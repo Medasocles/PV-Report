@@ -65,7 +65,17 @@ namespace PvReport.Services
             using (var client = new ImapClient())
             {
                 _progressNotificationService.Notify("Verbinde mit Mailserver...");
-                client.Connect(_mailServer, _port, _ssl);
+
+
+                try
+                {
+                    client.Connect(_mailServer, _port, _ssl);
+                }
+                catch (Exception e)
+                {
+                    _progressNotificationService.Notify($"Verbindung konnte nicht hergestellt werden!\nInfo: {e.Message}");
+                    return null;
+                }
 
                 _progressNotificationService.Notify("Melde Benutzer an Mailserver an...");
                 // Note: since we don't have an OAuth2 token, disable
@@ -77,7 +87,7 @@ namespace PvReport.Services
                 // The Inbox folder is always available on all IMAP servers...
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadOnly);
-                
+
                 var sq = SearchQuery.HasGMailLabel(gmailLabel)
                     .And(SearchQuery.DeliveredAfter(fromDate));
 
