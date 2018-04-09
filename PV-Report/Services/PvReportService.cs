@@ -14,7 +14,7 @@ namespace PvReport.Services
             PvReports = new ObservableCollection<PvReportModel>();
         }
 
-        public ObservableCollection<PvReportModel> PvReports; // only balance-reports not production-reports
+        public readonly ObservableCollection<PvReportModel> PvReports; // only balance-reports not production-reports
 
         public bool LoadPvReports()
         {
