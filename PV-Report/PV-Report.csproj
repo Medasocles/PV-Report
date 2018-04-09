@@ -89,11 +89,15 @@
     <Compile Include="Services\PvReportService.cs" />
     <Compile Include="Services\Storage\StorageService.cs" />
     <Compile Include="Services\Storage\SerializationService.cs" />
+    <Compile Include="ViewModels\Evaluation\AvailableYearsViewModel.cs" />
     <Compile Include="ViewModels\Evaluation\YearSummaryViewModel.cs" />
     <Compile Include="ViewModels\Mbox\MboxImportViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProgressVisualizationViewModel.cs" />
     <Compile Include="ViewModels\SyncPvReportsViewModel.cs" />
+    <Compile Include="Views\Evaluation\AvailableYearsView.xaml.cs">
+      <DependentUpon>AvailableYearsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Evaluation\PvMonthView.xaml.cs">
       <DependentUpon>PvMonthView.xaml</DependentUpon>
     </Compile>
@@ -133,6 +137,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Evaluation\AvailableYearsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -7,58 +7,63 @@
              xmlns:evaluationView="clr-namespace:PvReport.Views.Evaluation"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Foreground="White">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="30"/>
-        </Grid.ColumnDefinitions>
-        
-        <TextBlock Text="Jahr" />
-        <TextBlock Grid.Row="0" Grid.Column="1" 
-                   Text="{Binding Year}" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" MinHeight="30"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="Auto" MinWidth="100"/>
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" 
-                   Text="Verbrauch"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" 
-                   Text="{Binding Consumption, StringFormat=N3}"/>
-        <TextBlock Grid.Row="1" Grid.Column="2" 
-                   Text="kWh" />
+            <TextBlock Text="Zeitraum" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock.Inlines>
+                    <Run Text="{Binding From, StringFormat=dd.MM.yyyy}" />
+                    <Run Text=" bis " />
+                    <Run Text="{Binding To, StringFormat=dd.MM.yyyy}"/>
+                </TextBlock.Inlines>
+                </TextBlock>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" 
-                   Text="Produktion"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" 
-                   Text="{Binding Production, StringFormat=N3}"/>
-        <TextBlock Grid.Row="2" Grid.Column="2" 
-                   Text="kWh" />
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                       Text="Verbrauch"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" 
+                       Text="{Binding Consumption, StringFormat=N3}"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" 
+                       Text="kWh" />
 
-        <TextBlock Grid.Row="3" Grid.Column="0" 
-                   Text="Eigenverbrauch"/>
-        <TextBlock Grid.Row="3" Grid.Column="1" 
-                   Text="{Binding SelfConsumption, StringFormat=N3}"/>
-        <TextBlock Grid.Row="3" Grid.Column="2" 
-                   Text="kWh" />
+            <TextBlock Grid.Row="2" Grid.Column="0" 
+                       Text="Produktion"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" 
+                       Text="{Binding Production, StringFormat=N3}"/>
+            <TextBlock Grid.Row="2" Grid.Column="2" 
+                       Text="kWh" />
 
-        <TextBlock Grid.Row="4" Grid.Column="0" 
-                   Text="Einspeisung"/>
-        <TextBlock Grid.Row="4" Grid.Column="1" 
-                   Text="{Binding GridFeedIn, StringFormat=N3}"/>
-        <TextBlock Grid.Row="4" Grid.Column="2" 
-                   Text="kWh" />
+            <TextBlock Grid.Row="3" Grid.Column="0" 
+                       Text="Eigenverbrauch"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" 
+                       Text="{Binding SelfConsumption, StringFormat=N3}"/>
+            <TextBlock Grid.Row="3" Grid.Column="2" 
+                       Text="kWh" />
 
-        <TextBlock Grid.Row="5" Grid.Column="0" 
-                   Text="Netzbezug"/>
-        <TextBlock Grid.Row="5" Grid.Column="1" 
-                   Text="{Binding GridTakeOut, StringFormat=N3}"/>
-        <TextBlock Grid.Row="5" Grid.Column="2" 
-                   Text="kWh" />
-    </Grid>
+            <TextBlock Grid.Row="4" Grid.Column="0" 
+                       Text="Einspeisung"/>
+            <TextBlock Grid.Row="4" Grid.Column="1" 
+                       Text="{Binding GridFeedIn, StringFormat=N3}"/>
+            <TextBlock Grid.Row="4" Grid.Column="2" 
+                       Text="kWh" />
+
+            <TextBlock Grid.Row="5" Grid.Column="0" 
+                       Text="Netzbezug"/>
+            <TextBlock Grid.Row="5" Grid.Column="1" 
+                       Text="{Binding GridTakeOut, StringFormat=N3}"/>
+            <TextBlock Grid.Row="5" Grid.Column="2" 
+                       Text="kWh" />
+        </Grid>
 </UserControl>

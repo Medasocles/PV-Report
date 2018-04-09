@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="PvReport.Views.Evaluation.AvailableYearsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PvReport.Views.Evaluation"
+             xmlns:evaluation="clr-namespace:PvReport.ViewModels.Evaluation"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="UserControl">
+
+    <TabControl ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear}" Background="{StaticResource BackgroundBrush}">
+        <TabControl.ContentTemplate>
+            <DataTemplate DataType="{x:Type evaluation:YearSummaryViewModel}">
+                <local:YearSummaryView DataContext="{Binding DataContext.ActiveYearSummaryViewModel, ElementName=UserControl}"/>
+            </DataTemplate>
+        </TabControl.ContentTemplate>
+    </TabControl>
+</UserControl>
