@@ -12,6 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="ForegroundBrush" Color="White" />
             <SolidColorBrush x:Key="BackgroundBrush" Color="#343434" />
+            <SolidColorBrush x:Key="LightBackgroundBrush" Color="#363636" />
 
 
             <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

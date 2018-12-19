@@ -8,22 +8,31 @@
              xmlns:models="clr-namespace:PvReport.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance evaluation:YearSummaryViewModel}">
+             d:DataContext="{d:DesignInstance evaluation:YearSummaryViewModel}"
+             Background="{StaticResource BackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <local:PvReportSpanView DataContext="{Binding YearSummary}"/>
 
         <ListBox Grid.Row="1" 
-                 ItemsSource="{Binding Months, Mode=OneWay}">
+                 ItemsSource="{Binding Months, Mode=OneWay}"
+                 Background="Transparent">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type models:PvReportSpanModel }" >
-                    <local:PvReportSpanView DataContext="{Binding}" />
+                    <Border Background="{StaticResource LightBackgroundBrush}" Margin="10">
+                        <local:PvReportSpanView DataContext="{Binding}" />
+                    </Border>
                 </DataTemplate>
             </ListBox.Resources>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="4" Rows="3"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
         </ListBox>
     </Grid>
 </UserControl>
