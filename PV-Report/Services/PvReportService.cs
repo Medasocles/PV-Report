@@ -1,6 +1,7 @@
 ﻿using PvReport.Models;
 using PvReport.Services.Storage;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -15,6 +16,11 @@ namespace PvReport.Services
         }
 
         public readonly ObservableCollection<PvReportModel> PvReports; // only balance-reports not production-reports
+
+        public void Initialize()
+        {
+            LoadPvReports();
+        }
 
         public bool LoadPvReports()
         {
@@ -44,13 +50,43 @@ namespace PvReport.Services
                     }
                 }
             }
-            
+
             return true;
         }
 
-        public void Initialize()
+
+        public PvReportSpanModel GetPvReportYearSummary(int year)
         {
-            LoadPvReports();
+            var reports = PvReports.Where(report => report.Date.Year.Equals(year)).ToList();
+            return !reports.Any() ? null : AggregatePvReports(reports);
+        }
+
+        public PvReportSpanModel GetPvReportMonthSummary(int year, int month)
+        {
+            var reports = PvReports.Where(report => report.Date.Year.Equals(year) && report.Date.Month.Equals(month)).ToList();
+            return !reports.Any() ? null : AggregatePvReports(reports);
+        }
+
+        public PvReportSpanModel GetReportSpan(DateTime from, DateTime to)
+        {
+            var reports = PvReports.Where(report => report.Date >= from && report.Date <= to).ToList();
+            return AggregatePvReports(reports);
+        }
+
+        private static PvReportSpanModel AggregatePvReports(IList<PvReportModel> reports)
+        {
+            var spanModel = new PvReportSpanModel
+            {
+                TotalProduction = reports.Sum(report => report.TotalProduction) / 1000,
+                TotalConsumption = reports.Sum(report => report.TotalConsumption) / 1000,
+                SelfConsumption = reports.Sum(report => report.SelfConsumption) / 1000,
+                GridFeedIn = reports.Sum(report => report.GridFeedIn) / 1000,
+                GridTakeOut = reports.Sum(report => report.GridTakeOut) / 1000,
+                From = reports.Min(report => report.Date),
+                To = reports.Max(report => report.Date)
+            };
+
+            return spanModel;
         }
     }
 }

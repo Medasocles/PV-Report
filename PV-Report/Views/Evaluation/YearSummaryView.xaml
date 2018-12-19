@@ -3,67 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="PvReport.Views.Evaluation"
-             xmlns:evaluationView="clr-namespace:PvReport.Views.Evaluation"
+             xmlns:local="clr-namespace:PvReport.Views.Evaluation"
+             xmlns:evaluation="clr-namespace:PvReport.ViewModels.Evaluation"
+             xmlns:models="clr-namespace:PvReport.Models"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Foreground="White">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="30"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="Auto" MinWidth="100"/>
-                <ColumnDefinition Width="30"/>
-            </Grid.ColumnDefinitions>
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance evaluation:YearSummaryViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Zeitraum" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
-                <TextBlock.Inlines>
-                    <Run Text="{Binding From, StringFormat=dd.MM.yyyy}" />
-                    <Run Text=" bis " />
-                    <Run Text="{Binding To, StringFormat=dd.MM.yyyy}"/>
-                </TextBlock.Inlines>
-                </TextBlock>
+        <local:PvReportSpanView DataContext="{Binding YearSummary}"/>
 
-            <TextBlock Grid.Row="1" Grid.Column="0"
-                       Text="Verbrauch"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" 
-                       Text="{Binding Consumption, StringFormat=N3}"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" 
-                       Text="kWh" />
-
-            <TextBlock Grid.Row="2" Grid.Column="0" 
-                       Text="Produktion"/>
-            <TextBlock Grid.Row="2" Grid.Column="1" 
-                       Text="{Binding Production, StringFormat=N3}"/>
-            <TextBlock Grid.Row="2" Grid.Column="2" 
-                       Text="kWh" />
-
-            <TextBlock Grid.Row="3" Grid.Column="0" 
-                       Text="Eigenverbrauch"/>
-            <TextBlock Grid.Row="3" Grid.Column="1" 
-                       Text="{Binding SelfConsumption, StringFormat=N3}"/>
-            <TextBlock Grid.Row="3" Grid.Column="2" 
-                       Text="kWh" />
-
-            <TextBlock Grid.Row="4" Grid.Column="0" 
-                       Text="Einspeisung"/>
-            <TextBlock Grid.Row="4" Grid.Column="1" 
-                       Text="{Binding GridFeedIn, StringFormat=N3}"/>
-            <TextBlock Grid.Row="4" Grid.Column="2" 
-                       Text="kWh" />
-
-            <TextBlock Grid.Row="5" Grid.Column="0" 
-                       Text="Netzbezug"/>
-            <TextBlock Grid.Row="5" Grid.Column="1" 
-                       Text="{Binding GridTakeOut, StringFormat=N3}"/>
-            <TextBlock Grid.Row="5" Grid.Column="2" 
-                       Text="kWh" />
-        </Grid>
+        <ListBox Grid.Row="1" 
+                 ItemsSource="{Binding Months, Mode=OneWay}">
+            <ListBox.Resources>
+                <DataTemplate DataType="{x:Type models:PvReportSpanModel }" >
+                    <local:PvReportSpanView DataContext="{Binding}" />
+                </DataTemplate>
+            </ListBox.Resources>
+        </ListBox>
+    </Grid>
 </UserControl>

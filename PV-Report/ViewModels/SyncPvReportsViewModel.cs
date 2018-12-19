@@ -72,6 +72,7 @@ namespace PvReport.ViewModels
         private async void OnSyncReportsCommandExecute(object o)
         {
             _progressNotificationService.Notify("Starte Synchronisation...");
+
             // synchronize with online pv-reports from mail-repo
             if (await DownloadLatestReportMailsAsync() is IEnumerable<MimeMessage> messages)
             {
@@ -107,6 +108,7 @@ namespace PvReport.ViewModels
                 var mailRepository = new MailRepository(SyncSettingsModel.ServerAddressName,
                     SyncSettingsModel.ServerPort, true, SyncSettingsModel.UserName, SyncSettingsModel.Password,
                     _progressNotificationService);
+                
                 var allEmails = await Task.Run(() => mailRepository.GetAllMails(SyncSettingsModel.LastSyncDate, "PV Report"));
                 var allMailArray = allEmails as MimeMessage[] ?? allEmails.ToArray();
                 if (allMailArray.Any())

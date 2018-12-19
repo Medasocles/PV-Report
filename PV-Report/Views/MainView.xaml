@@ -7,12 +7,10 @@
              xmlns:viewModels="clr-namespace:PvReport.ViewModels"
              xmlns:evaluationViews="clr-namespace:PvReport.Views.Evaluation"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Foreground="{StaticResource ForegroundBrush}">
+             d:DesignHeight="450" d:DesignWidth="800" 
+             Foreground="{StaticResource ForegroundBrush}"
+             d:DataContext="{d:DesignInstance viewModels:MainViewModel}">
     
-    <d:DesignData.DataContext>
-        <viewModels:MainViewModel />
-    </d:DesignData.DataContext>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -21,8 +19,7 @@
         </Grid.RowDefinitions>
 
         <views:SyncPvReportsView Grid.Row="0" DataContext="{Binding SyncPvReportsViewModel}"/>
-        <views:ProgressVisualizer Grid.Row="1" 
-                                  DataContext="{Binding ProgressVisualizationViewModel}"/>
-        <evaluationViews:AvailableYearsView Grid.Row="2" DataContext="{Binding AvailableYearsViewModel}"/>
+        <views:ProgressVisualizer Grid.Row="1" DataContext="{Binding ProgressVisualizationViewModel}"/>
+        <evaluationViews:YearsTabView Grid.Row="2" DataContext="{Binding AvailableYearsViewModel}"/>
     </Grid>
 </UserControl>

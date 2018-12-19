@@ -1,140 +1,54 @@
-﻿using PvReport.Library.MVVM.ViewModelBase;
-using PvReport.Services;
-using System;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using PvReport.Library.MVVM.ViewModelBase;
+using PvReport.Models;
+using PvReport.Services;
 
 namespace PvReport.ViewModels.Evaluation
 {
     public class YearSummaryViewModel : ViewModelBase
     {
-        private PvReportService _pvReportService;
-        private int _year;
-        private double _production;
-        private double _consumption;
-        private double _selfConsumption;
-        private double _gridFeedIn;
-        private double _gridTakeOut;
-        private DateTime _from;
-        private DateTime _to;
+        private readonly PvReportService _pvReportService;
+        private PvReportSpanModel _yearSummary;
 
         public YearSummaryViewModel(int year, PvReportService pvReportService)
         {
-            _pvReportService = pvReportService;
-            _pvReportService.PvReports.CollectionChanged += OnReportsChanged;
             Year = year;
-            UpdateReports();
+            _pvReportService = pvReportService;
+            _pvReportService.PvReports.CollectionChanged += OnPvReportsCollectionChanged;
+
+            Months = new ObservableCollection<PvReportSpanModel>();
+            Initialize();
         }
 
-        private void OnReportsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            UpdateReports();
-        }
+        public int Year { get; }
 
-        public int Year
+        public ObservableCollection<PvReportSpanModel> Months { get; }
+        
+        public PvReportSpanModel YearSummary
         {
-            get => _year;
+            get => _yearSummary;
             set
             {
-                _year = value;
+                _yearSummary = value; 
                 OnPropertyChanged();
             }
         }
 
-        public DateTime From
+        private void Initialize()
         {
-            get => _from;
-            set
+            YearSummary = _pvReportService.GetPvReportYearSummary(Year);
+
+            for (var i = 1; i <= 12; i++)
             {
-                _from = value;
-                OnPropertyChanged();
+                Months.Add(_pvReportService.GetPvReportMonthSummary(Year, i));
             }
         }
 
-        public DateTime To
+        private void OnPvReportsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            get => _to;
-            set
-            {
-                _to = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Gesamt Erzeugung
-        /// </summary>
-        public double Production
-        {
-            get => _production;
-            set
-            {
-                _production = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Gesamt Verbrauch
-        /// </summary>
-        public double Consumption
-        {
-            get => _consumption;
-            set
-            {
-                _consumption = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Eigenverbrauch
-        /// </summary>
-        public double SelfConsumption
-        {
-            get => _selfConsumption;
-            set
-            {
-                _selfConsumption = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Energie ins Netz eingespeist
-        /// </summary>
-        public double GridFeedIn
-        {
-            get => _gridFeedIn;
-            set
-            {
-                _gridFeedIn = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Energie vom Netz bezogen
-        /// </summary>
-        public double GridTakeOut
-        {
-            get => _gridTakeOut;
-            set
-            {
-                _gridTakeOut = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void UpdateReports()
-        {
-            var reports = _pvReportService.PvReports.Where(report => report.Date.Year.Equals(Year)).ToList();
-            Production = reports.Sum(report => report.TotalProduction) / 1000;
-            Consumption = reports.Sum(report => report.TotalConsumption) / 1000;
-            SelfConsumption = reports.Sum(report => report.SelfConsumption) / 1000;
-            GridFeedIn = reports.Sum(report => report.GridFeedIn) / 1000;
-            GridTakeOut = reports.Sum(report => report.GridTakeOut) / 1000;
-            From = reports.Min(report => report.Date);
-            To = reports.Max(report => report.Date);
+            
         }
     }
 }

@@ -10,7 +10,7 @@ namespace PvReport.ViewModels
         private ProgressNotificationService _progressNotificationService;
         private SyncPvReportsViewModel _syncPvReportsViewModel;
         private ProgressVisualizationViewModel _progressVisualizationViewModel;
-        private AvailableYearsViewModel _availableYearsViewModel;
+        private YearsTabViewModel _availableYearsViewModel;
 
         public MainViewModel()
         {
@@ -19,7 +19,7 @@ namespace PvReport.ViewModels
             _progressNotificationService = new ProgressNotificationService();
             SyncPvReportsViewModel = new SyncPvReportsViewModel(_pvReportService, _progressNotificationService);
             ProgressVisualizationViewModel = new ProgressVisualizationViewModel(_progressNotificationService);
-            AvailableYearsViewModel = new AvailableYearsViewModel(_pvReportService);
+            AvailableYearsViewModel = new YearsTabViewModel(_pvReportService);
         }
 
         public SyncPvReportsViewModel SyncPvReportsViewModel
@@ -42,7 +42,7 @@ namespace PvReport.ViewModels
             }
         }
 
-        public AvailableYearsViewModel AvailableYearsViewModel
+        public YearsTabViewModel AvailableYearsViewModel
         {
             get => _availableYearsViewModel;
             set

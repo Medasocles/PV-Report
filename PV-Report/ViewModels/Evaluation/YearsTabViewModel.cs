@@ -6,19 +6,19 @@ using System.Linq;
 
 namespace PvReport.ViewModels.Evaluation
 {
-    public class AvailableYearsViewModel : ViewModelBase
+    public class YearsTabViewModel : ViewModelBase
     {
         private readonly PvReportService _pvReportService;
         private int _selectedYear;
-        private IDictionary<int, YearSummaryViewModel> _yearSummaryViewModels;
-        private YearSummaryViewModel _activeYearSummaryViewModel;
+        private readonly IDictionary<int, YearSummaryViewModel> _yearSummaryVms;
+        private YearSummaryViewModel _activeYearVm;
 
-        public AvailableYearsViewModel(PvReportService pvReportService)
+        public YearsTabViewModel(PvReportService pvReportService)
         {
             _pvReportService = pvReportService;
             _pvReportService.PvReports.CollectionChanged += OnPvReportsChanged;
 
-            _yearSummaryViewModels = new Dictionary<int, YearSummaryViewModel>();
+            _yearSummaryVms = new Dictionary<int, YearSummaryViewModel>();
 
             Years = new ObservableCollection<int>();
             UpdateYears();
@@ -42,10 +42,10 @@ namespace PvReport.ViewModels.Evaluation
 
         public YearSummaryViewModel ActiveYearSummaryViewModel
         {
-            get => _activeYearSummaryViewModel;
+            get => _activeYearVm;
             set
             {
-                _activeYearSummaryViewModel = value;
+                _activeYearVm = value;
                 OnPropertyChanged();
             }
         }
@@ -61,13 +61,13 @@ namespace PvReport.ViewModels.Evaluation
 
         private void SelectYearSummaryViewModel(int year)
         {
-            if (!_yearSummaryViewModels.ContainsKey(year))
+            if (!_yearSummaryVms.ContainsKey(year))
             {
                 var vm = new YearSummaryViewModel(year, _pvReportService);
-                _yearSummaryViewModels.Add(year, vm);
+                _yearSummaryVms.Add(year, vm);
             }
 
-            ActiveYearSummaryViewModel = _yearSummaryViewModels[year];
+            ActiveYearSummaryViewModel = _yearSummaryVms[year];
         }
 
         private void OnPvReportsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

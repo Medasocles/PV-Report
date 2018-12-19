@@ -7,9 +7,16 @@ namespace PvReport.Models
     // [dd.MM.yyyy],[Wh],[Wh],[Wh],[Wh],[Wh],
     // 08.08.2017,33481.52,13788.33,9293.52,24246.61,4567.15,
 
-    [Serializable]
-    public class PvReportModel : PvReportModelBase
+    public class PvReportSpanModel : PvReportModelBase
     {
-        public DateTime Date { get; set; }
+        /// <summary>
+        /// Start of span
+        /// </summary>
+        public DateTime From { get; set; }
+
+        /// <summary>
+        /// End of span
+        /// </summary>
+        public DateTime To { get; set; }
     }
 }
