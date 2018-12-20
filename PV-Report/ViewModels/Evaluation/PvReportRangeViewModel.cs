@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace PvReport.ViewModels.Evaluation
 {
-    public class PvReportSpanViewModel : ViewModelBase
+    public class PvReportRangeViewModel : ViewModelBase
     {
         private readonly PvReportService _pvReportService;
         private int _year;
@@ -17,7 +17,7 @@ namespace PvReport.ViewModels.Evaluation
         private DateTime _from;
         private DateTime _to;
 
-        public PvReportSpanViewModel(int year, PvReportService pvReportService)
+        public PvReportRangeViewModel(int year, PvReportService pvReportService)
         {
             _pvReportService = pvReportService;
             _pvReportService.PvReports.CollectionChanged += OnReportsChanged;

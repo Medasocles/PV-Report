@@ -8,14 +8,48 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance evaluation:YearsTabViewModel}"
-             x:Name="UserControl">
+             x:Name="UserControl" Background="Gray">
 
     <TabControl ItemsSource="{Binding Years}" 
                 SelectedItem="{Binding SelectedYear}" 
-                Background="{StaticResource BackgroundBrush}">
+                Background="DimGray"
+                Margin="0" Padding="0"
+                BorderThickness="0" TabStripPlacement="Left">
+        <TabControl.Resources>
+            <Style TargetType="TabItem">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Grid Name="Panel" Background="Transparent" Opacity="0.8"
+                                  Width="40" Height="40">
+                                <ContentPresenter x:Name="ContentSite"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  ContentSource="Header"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Panel" Property="Background" Value="LightGray" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter TargetName="Panel" Property="Background" Value="Gray" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Panel" Property="Opacity" Value="1.0" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </TabControl.Resources>
         <TabControl.ContentTemplate>
             <DataTemplate DataType="{x:Type evaluation:YearSummaryViewModel}">
-                <local:YearSummaryView DataContext="{Binding DataContext.ActiveYearSummaryViewModel, ElementName=UserControl}"/>
+                <local:YearSummaryView DataContext="{Binding DataContext.ActiveYearSummaryViewModel, ElementName=UserControl}"
+                                       Margin="0"/>
             </DataTemplate>
         </TabControl.ContentTemplate>
     </TabControl>

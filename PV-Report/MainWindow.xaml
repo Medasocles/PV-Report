@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:PvReport.Views"
         mc:Ignorable="d"
-        Title="PV Report" Height="450" Width="800" Background="{StaticResource BackgroundBrush}">
+        Title="PV Report" 
+        WindowState="Maximized"
+        Background="{StaticResource BackgroundBrush}">
     <Grid>
         <views:MainView DataContext="{Binding MainViewModel}"/>
     </Grid>

@@ -32,6 +32,8 @@ namespace PvReport.Models
         /// <summary>
         /// Energie vom Netz bezogen
         /// </summary>
-        public double GridTakeOut { get; set; } 
+        public double GridTakeOut { get; set; }
+
+        public bool HasData => TotalConsumption != 0 && TotalProduction != 0;
     }
 }

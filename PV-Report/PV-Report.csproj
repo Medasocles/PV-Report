@@ -87,6 +87,10 @@
     </ApplicationDefinition>
     <Compile Include="Contracts\Enumerations\PvReportType.cs" />
     <Compile Include="Contracts\Enumerations\PvReportIntervall.cs" />
+    <Compile Include="Converter\BaseValueConverter.cs" />
+    <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converter\InverseBooleanToVisibilityConverter.cs" />
+    <Compile Include="Converter\PvReportRangeTypeToTimeRangeTextConverter.cs" />
     <Compile Include="Library\Command\Command.cs" />
     <Compile Include="Library\Converter\BooleanToBrushConverter.cs" />
     <Compile Include="Library\Converter\ToBooleanConverters.cs" />
@@ -95,25 +99,30 @@
     <Compile Include="Library\MVVM\ModelBase\ModelBase.cs" />
     <Compile Include="Library\MVVM\ViewModelBase\ViewModelBase.cs" />
     <Compile Include="Models\PvReportModelBase.cs" />
-    <Compile Include="Models\PvReportSpanModel.cs" />
+    <Compile Include="Models\PvReportRangeModel.cs" />
     <Compile Include="Models\PvReportModel.cs" />
     <Compile Include="Models\PvReportDownloadInfo.cs" />
     <Compile Include="Models\SyncSettingsModel.cs" />
     <Compile Include="Services\ProgressNotificationService.cs" />
+    <Compile Include="Services\PvReportRangeTypeCalculator.cs" />
     <Compile Include="Services\PvReportDownloader.cs" />
     <Compile Include="Services\Mail\PvReportMailParser.cs" />
     <Compile Include="Services\PvReportParser.cs" />
     <Compile Include="Services\PvReportService.cs" />
     <Compile Include="Services\Storage\StorageService.cs" />
     <Compile Include="Services\Storage\SerializationService.cs" />
+    <Compile Include="Template\PvReportRangeItemTemplateSelector.cs" />
     <Compile Include="ViewModels\Evaluation\PvMonthReportViewModel.cs" />
     <Compile Include="ViewModels\Evaluation\YearSummaryViewModel.cs" />
     <Compile Include="ViewModels\Evaluation\YearsTabViewModel.cs" />
-    <Compile Include="ViewModels\Evaluation\PvReportSpanViewModel.cs" />
+    <Compile Include="ViewModels\Evaluation\PvReportRangeViewModel.cs" />
     <Compile Include="ViewModels\Mbox\MboxImportViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProgressVisualizationViewModel.cs" />
     <Compile Include="ViewModels\SyncPvReportsViewModel.cs" />
+    <Compile Include="Views\Evaluation\PvReportYearRangeView.xaml.cs">
+      <DependentUpon>PvReportYearRangeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Evaluation\YearsTabView.xaml.cs">
       <DependentUpon>YearsTabView.xaml</DependentUpon>
     </Compile>
@@ -132,8 +141,8 @@
     <Compile Include="Views\ProgressVisualizationView.xaml.cs">
       <DependentUpon>ProgressVisualizationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Evaluation\PvReportSpanView.xaml.cs">
-      <DependentUpon>PvReportSpanView.xaml</DependentUpon>
+    <Compile Include="Views\Evaluation\PvReportRangeView.xaml.cs">
+      <DependentUpon>PvReportRangeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Settings\SyncSettingsView.xaml.cs">
       <DependentUpon>SyncSettingsView.xaml</DependentUpon>
@@ -162,6 +171,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Evaluation\PvReportYearRangeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Evaluation\YearsTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -186,7 +199,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Evaluation\PvReportSpanView.xaml">
+    <Page Include="Views\Evaluation\PvReportRangeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

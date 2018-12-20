@@ -55,27 +55,40 @@ namespace PvReport.Services
         }
 
 
-        public PvReportSpanModel GetPvReportYearSummary(int year)
+        public PvReportRangeModel GetPvReportYearSummary(int year)
         {
             var reports = PvReports.Where(report => report.Date.Year.Equals(year)).ToList();
             return !reports.Any() ? null : AggregatePvReports(reports);
         }
 
-        public PvReportSpanModel GetPvReportMonthSummary(int year, int month)
+        public PvReportRangeModel GetPvReportMonthSummary(int year, int month)
         {
             var reports = PvReports.Where(report => report.Date.Year.Equals(year) && report.Date.Month.Equals(month)).ToList();
-            return !reports.Any() ? null : AggregatePvReports(reports);
+
+            if (reports.Any())
+                return AggregatePvReports(reports);
+
+            else
+            {
+                return new PvReportRangeModel()
+                {
+                    From = new DateTime(year, month, 1),
+                    To = new DateTime(year, month, DateTime.DaysInMonth(year, month)),
+                };
+            }
+
+            return reports.Any() ? null : AggregatePvReports(reports);
         }
 
-        public PvReportSpanModel GetReportSpan(DateTime from, DateTime to)
+        public PvReportRangeModel GetReportSpan(DateTime from, DateTime to)
         {
             var reports = PvReports.Where(report => report.Date >= from && report.Date <= to).ToList();
             return AggregatePvReports(reports);
         }
 
-        private static PvReportSpanModel AggregatePvReports(IList<PvReportModel> reports)
+        private static PvReportRangeModel AggregatePvReports(IList<PvReportModel> reports)
         {
-            var spanModel = new PvReportSpanModel
+            var spanModel = new PvReportRangeModel
             {
                 TotalProduction = reports.Sum(report => report.TotalProduction) / 1000,
                 TotalConsumption = reports.Sum(report => report.TotalConsumption) / 1000,
@@ -83,7 +96,7 @@ namespace PvReport.Services
                 GridFeedIn = reports.Sum(report => report.GridFeedIn) / 1000,
                 GridTakeOut = reports.Sum(report => report.GridTakeOut) / 1000,
                 From = reports.Min(report => report.Date),
-                To = reports.Max(report => report.Date)
+                To = reports.Max(report => report.Date),
             };
 
             return spanModel;

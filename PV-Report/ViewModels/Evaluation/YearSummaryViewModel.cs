@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using PvReport.Library.MVVM.ViewModelBase;
+﻿using PvReport.Library.MVVM.ViewModelBase;
 using PvReport.Models;
 using PvReport.Services;
+using System.Collections.ObjectModel;
 
 namespace PvReport.ViewModels.Evaluation
 {
     public class YearSummaryViewModel : ViewModelBase
     {
         private readonly PvReportService _pvReportService;
-        private PvReportSpanModel _yearSummary;
+        private PvReportRangeModel _yearSummary;
 
         public YearSummaryViewModel(int year, PvReportService pvReportService)
         {
@@ -18,15 +16,15 @@ namespace PvReport.ViewModels.Evaluation
             _pvReportService = pvReportService;
             _pvReportService.PvReports.CollectionChanged += OnPvReportsCollectionChanged;
 
-            Months = new ObservableCollection<PvReportSpanModel>();
+            Months = new ObservableCollection<PvReportRangeModel>();
             Initialize();
         }
 
         public int Year { get; }
 
-        public ObservableCollection<PvReportSpanModel> Months { get; }
+        public ObservableCollection<PvReportRangeModel> Months { get; }
         
-        public PvReportSpanModel YearSummary
+        public PvReportRangeModel YearSummary
         {
             get => _yearSummary;
             set

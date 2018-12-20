@@ -7,32 +7,58 @@
              xmlns:evaluation="clr-namespace:PvReport.ViewModels.Evaluation"
              xmlns:models="clr-namespace:PvReport.Models"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance evaluation:YearSummaryViewModel}"
-             Background="{StaticResource BackgroundBrush}">
+             Background="DimGray">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+        </Grid.ColumnDefinitions>
 
-        <local:PvReportSpanView DataContext="{Binding YearSummary}"/>
+        <local:PvReportYearRangeView Grid.Row="1" Grid.Column="1" 
+                                     DataContext="{Binding YearSummary}"/>
 
-        <ListBox Grid.Row="1" 
+        <Border Grid.Row="2" Grid.Column="1" Background="Gray" />
+
+        <ListBox Grid.Row="3" Grid.Column="1"
+                 Margin="0 5"
                  ItemsSource="{Binding Months, Mode=OneWay}"
-                 Background="Transparent">
+                 Background="Transparent"
+                 BorderBrush="Transparent" BorderThickness="0">
             <ListBox.Resources>
-                <DataTemplate DataType="{x:Type models:PvReportSpanModel }" >
-                    <Border Background="{StaticResource LightBackgroundBrush}" Margin="10">
-                        <local:PvReportSpanView DataContext="{Binding}" />
+
+                <DataTemplate DataType="{x:Type models:PvReportRangeModel }" >
+                    <Border Background="{StaticResource LightBackgroundBrush}">
+                        <local:PvReportRangeView DataContext="{Binding}" />
                     </Border>
                 </DataTemplate>
+
+                <ControlTemplate x:Key="ItemTemplate" TargetType="{x:Type ListBoxItem}" >
+                    <ContentPresenter Content="{Binding}"/>
+                </ControlTemplate>
+
             </ListBox.Resources>
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Template" Value="{StaticResource ItemTemplate}"/>
+                    <!--<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>-->
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="4" Rows="3"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
+
         </ListBox>
     </Grid>
 </UserControl>

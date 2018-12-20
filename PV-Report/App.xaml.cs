@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace PvReport
@@ -8,6 +9,11 @@ namespace PvReport
     /// </summary>
     public partial class App : Application
     {
+
+        public App()
+        {
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("de-DE");
+        }
         private void OnUnhandledDispatcherException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             
