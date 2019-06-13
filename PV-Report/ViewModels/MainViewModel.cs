@@ -15,7 +15,7 @@ namespace PvReport.ViewModels
         public MainViewModel()
         {
             _pvReportService = new PvReportService();
-            _pvReportService.Initialize();
+            _pvReportService.LoadPvReports();
             _progressNotificationService = new ProgressNotificationService();
             SyncPvReportsViewModel = new SyncPvReportsViewModel(_pvReportService, _progressNotificationService);
             ProgressVisualizationViewModel = new ProgressVisualizationViewModel(_progressNotificationService);
